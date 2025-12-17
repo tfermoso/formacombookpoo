@@ -21,6 +21,30 @@ foreach($result as $row){
   
     array_push($fotos,$foto);
 }
+//leo usuarios
+
+$stmt=$conn->prepare('select * from usuarios');
+$stmt->execute();
+$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+$usuarios=array();
+foreach($result as $row){
+    require_once 'model/Usuario.php';
+    $usuario=new Usuario(
+        $row['usuario_id'],
+        $row['nombre'],
+        $row['email'],
+        $row['password'],
+        $row['avatar'],
+        $row['bio']
+    );
+  
+    array_push($usuarios,$usuario);
+}  
+
+//leo votos
+$stmt=$conn->prepare('select * from votos');
+$stmt->execute();   
+$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -34,9 +58,9 @@ foreach($result as $row){
     <h1>Lista de Fotos</h1>
     <?php foreach ($fotos as $foto): ?>
         <div>
-            <h2><?= htmlspecialchars($foto->getTitulo()) ?></h2>
-            <p><?= htmlspecialchars($foto->getDescripcion()) ?></p>
-            <img src="<?= htmlspecialchars($foto->getRuta()) ?>" alt="<?= htmlspecialchars($foto->getTitulo()) ?>">
+            <h2><?= htmlspecialchars($foto->titulo()) ?></h2>
+            <p><?= htmlspecialchars($foto->descripcion()) ?></p>
+            <img src="/formacombookpoo<?= htmlspecialchars($foto->ruta()) ?>" alt="<?= htmlspecialchars($foto->titulo()) ?>">
         </div>
     <?php endforeach; ?>
 </body>
