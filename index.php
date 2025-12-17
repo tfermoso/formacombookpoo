@@ -22,3 +22,22 @@ foreach($result as $row){
     array_push($fotos,$foto);
 }
 
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Lista de Fotos</h1>
+    <?php foreach ($fotos as $foto): ?>
+        <div>
+            <h2><?= htmlspecialchars($foto->getTitulo()) ?></h2>
+            <p><?= htmlspecialchars($foto->getDescripcion()) ?></p>
+            <img src="<?= htmlspecialchars($foto->getRuta()) ?>" alt="<?= htmlspecialchars($foto->getTitulo()) ?>">
+        </div>
+    <?php endforeach; ?>
+</body>
+</html>
