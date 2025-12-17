@@ -30,7 +30,7 @@ $usuarios=array();
 foreach($result as $row){
     require_once 'model/Usuario.php';
     $usuario=new Usuario(
-        $row['usuario_id'],
+        $row['usuarios_id'],
         $row['nombre'],
         $row['email'],
         $row['password'],
@@ -48,20 +48,49 @@ $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lista de Fotos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Lista de Fotos</h1>
-    <?php foreach ($fotos as $foto): ?>
-        <div>
-            <h2><?= htmlspecialchars($foto->titulo()) ?></h2>
-            <p><?= htmlspecialchars($foto->descripcion()) ?></p>
-            <img src="/formacombookpoo<?= htmlspecialchars($foto->ruta()) ?>" alt="<?= htmlspecialchars($foto->titulo()) ?>">
-        </div>
-    <?php endforeach; ?>
+
+<div class="container my-5">
+
+    <h1 class="text-center mb-4">Lista de Fotos</h1>
+
+    <div class="row g-4">
+        <?php foreach ($fotos as $foto): ?>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 shadow-sm">
+
+                    <img 
+                        src="/formacombookpoo<?= htmlspecialchars($foto->ruta()) ?>" 
+                        class="card-img-top"
+                        alt="<?= htmlspecialchars($foto->titulo()) ?>"
+                    >
+
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <?= htmlspecialchars($foto->titulo()) ?>
+                        </h5>
+                        <p class="card-text">
+                            <?= htmlspecialchars($foto->descripcion()) ?>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+</div>
+
+<!-- Bootstrap 5 JS (opcional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
