@@ -2,34 +2,34 @@
 require_once 'utils/Database.php';
 
 
-$db=new Database();
-$conn=$db->getConnection();
+$db = new Database();
+$conn = $db->getConnection();
 
-$stmt=$conn->prepare('select * from fotos');
+$stmt = $conn->prepare('select * from fotos');
 $stmt->execute();
-$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$fotos=array();
-foreach($result as $row){
+$fotos = array();
+foreach ($result as $row) {
     require_once 'model/Foto.php';
-    $foto=new Foto(
+    $foto = new Foto(
         $row['fotos_id'],
         $row['titulo'],
         $row['descripcion'],
         $row['ruta']
     );
-  
-    array_push($fotos,$foto);
+
+    array_push($fotos, $foto);
 }
 //leo usuarios
 
-$stmt=$conn->prepare('select * from usuarios');
+$stmt = $conn->prepare('select * from usuarios');
 $stmt->execute();
-$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
-$usuarios=array();
-foreach($result as $row){
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$usuarios = array();
+foreach ($result as $row) {
     require_once 'model/Usuario.php';
-    $usuario=new Usuario(
+    $usuario = new Usuario(
         $row['usuarios_id'],
         $row['nombre'],
         $row['email'],
@@ -37,22 +37,22 @@ foreach($result as $row){
         $row['avatar'],
         $row['bio']
     );
-  
-    array_push($usuarios,$usuario);
-}  
+
+    array_push($usuarios, $usuario);
+}
 
 //leo votos
-$stmt=$conn->prepare('select * from votos');
-$stmt->execute();   
-$result=$stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $conn->prepare('select * from votos');
+$stmt->execute();
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 //Recorro las fotos y les agrego los votos
-foreach($fotos as $foto){
-    foreach($result as $row){
-        if($row['fotos_id']==$foto->fotos_id()){
+foreach ($fotos as $foto) {
+    foreach ($result as $row) {
+        if ($row['fotos_id'] == $foto->fotos_id()) {
             //buscar el usuario correspondiente
-            foreach($usuarios as $usuario){
-                if($usuario->usuario_id()==$row['usuarios_id']){
+            foreach ($usuarios as $usuario) {
+                if ($usuario->usuario_id() == $row['usuarios_id']) {
                     $foto->agregarVoto($usuario);
                 }
             }
@@ -62,6 +62,7 @@ foreach($fotos as $foto){
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Lista de Fotos</title>
@@ -70,40 +71,59 @@ foreach($fotos as $foto){
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
 
-<div class="container my-5">
+    <div class="container my-5">
 
-    <h1 class="text-center mb-4">Lista de Fotos</h1>
+        <h1 class="text-center mb-4">Lista de Fotos</h1>
 
-    <div class="row g-4">
-        <?php foreach ($fotos as $foto): ?>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 shadow-sm">
+        <div class="row g-4">
+            <?php foreach ($fotos as $foto): ?>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm">
 
-                    <img 
-                        src="/formacombookpoo<?= htmlspecialchars($foto->ruta()) ?>" 
-                        class="card-img-top"
-                        alt="<?= htmlspecialchars($foto->titulo()) ?>"
-                    >
+                        <img src="/formacombookpoo<?= htmlspecialchars($foto->ruta()) ?>" class="card-img-top"
+                            alt="<?= htmlspecialchars($foto->titulo()) ?>">
 
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <?= htmlspecialchars($foto->titulo()) ?>
-                        </h5>
-                        <p class="card-text">
-                            <?= htmlspecialchars($foto->descripcion()) ?>
-                        </p>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <?= htmlspecialchars($foto->titulo()) ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= htmlspecialchars($foto->descripcion()) ?>
+                            </p>
+                            <h6>Votos:</h6>
+
+                            <!-- Botón circular con contador -->
+                            <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 40px; height: 40px;" data-bs-toggle="collapse" data-bs-target="#listaVotos"
+                                aria-expanded="false" aria-controls="listaVotos">
+                                <?= count($foto->votos) ?>
+                            </button>
+
+                            <!-- Lista colapsable -->
+                            <div class="collapse mt-2" id="listaVotos">
+                                <ul class="list-group">
+                                    <?php foreach ($foto->votos as $usuario): ?>
+                                        <li class="list-group-item">
+                                            <?= htmlspecialchars($usuario->nombre()) ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+
+                        </div>
+
                     </div>
-
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
+
     </div>
 
-</div>
-
-<!-- Bootstrap 5 JS (opcional) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5 JS (opcional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

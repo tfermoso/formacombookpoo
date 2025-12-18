@@ -4,7 +4,7 @@ class Foto{
     private $titulo;
     private $descripcion;
     private $ruta;
-    private $votos;
+    public $votos;
 
     public function __construct($fotos_id=null, $titulo, $descripcion, $ruta){
         $this->fotos_id = $fotos_id;
