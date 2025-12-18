@@ -26,5 +26,9 @@ class Foto{
     public function ruta(){
         return $this->ruta;
     }
+    public function agregarVoto($usuarios){
+        array_push($this->votos, $usuarios);
+        
+    }
 }
 

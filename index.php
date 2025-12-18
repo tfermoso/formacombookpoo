@@ -46,6 +46,19 @@ $stmt=$conn->prepare('select * from votos');
 $stmt->execute();   
 $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
 
+//Recorro las fotos y les agrego los votos
+foreach($fotos as $foto){
+    foreach($result as $row){
+        if($row['fotos_id']==$foto->fotos_id()){
+            //buscar el usuario correspondiente
+            foreach($usuarios as $usuario){
+                if($usuario->usuario_id()==$row['usuarios_id']){
+                    $foto->agregarVoto($usuario);
+                }
+            }
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
